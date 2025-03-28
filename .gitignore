@@ -1,0 +1,6 @@
+#env 
+.env
+#config 
+config.json
+#table definition 
+table_definition.ipynb
