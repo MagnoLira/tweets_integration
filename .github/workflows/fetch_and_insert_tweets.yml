@@ -29,4 +29,4 @@ jobs:
         run: echo "Environment variables set."
 
       - name: Run script
-        run: python your_script.py
+        run: python get_tweets.py
