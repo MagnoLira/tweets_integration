@@ -27,6 +27,7 @@ jobs:
           BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: echo "Environment variables set."
-
+      - name: Debug environment variables
+        run: env | grep BEARER
       - name: Run script
         run: python get_tweets.py
