@@ -4,6 +4,8 @@ import json
 from db_connection import get_db_connection
 from datetime import datetime
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 ### Global variables 
 
