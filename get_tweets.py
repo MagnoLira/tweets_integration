@@ -26,12 +26,21 @@ class KeyManager:
 
         if bearer_token:
             return {"BEARER_TOKEN": bearer_token}
+         # Fallback to local config.json
+        try:
+            with open("config.json", "r") as f:
+                return json.load(f)
+        except FileNotFoundError:
+            print("Error: config.json not found.")
+            return {}  # Retorna um dicionário vazio em vez de None
 
 class XApplication:
     def __init__(self, key_manager: KeyManager):
         """Initialize X API credentials using the provided key manager."""
-        self.bearer_token = key_manager.keys['BEARER_TOKEN'] 
-        self.client = ty.Client(bearer_token=self.bearer_token)
+        if not key_manager.keys.get("BEARER_TOKEN"):
+            raise ValueError("BEARER_TOKEN is missing. Ensure it's set in GitHub Secrets or config.json.")
+        
+        self.bearer_token = key_manager.keys["BEARER_TOKEN"]
 
 class TweetFetcher:
     def __init__(self, x_app: XApplication):
