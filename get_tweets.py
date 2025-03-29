@@ -1,4 +1,5 @@
 ### Libraries 
+# %%
 import tweepy as ty 
 import json 
 from db_connection import get_db_connection
@@ -13,7 +14,7 @@ DS = datetime.now().strftime("%d/%m/%Y %H:%M")
 
 ### Class
 
-
+# %%
 class KeyManager:
     def __init__(self):
         """Load API keys from a config file."""
@@ -25,14 +26,6 @@ class KeyManager:
 
         if bearer_token:
             return {"BEARER_TOKEN": bearer_token}
-        else:
-            # Fallback to local config.json
-            try:
-                with open("config.json", "r") as f:
-                    return json.load(f)
-            except FileNotFoundError:
-                print("Error: config.json not found.")
-                return None
 
 class XApplication:
     def __init__(self, key_manager: KeyManager):
@@ -95,15 +88,15 @@ def insert_tweets_into_db(keyword, tweets):
         conn.close()        
         
 ### Initialize class 
-
+# %%
 key_manager = KeyManager()
 app = XApplication(key_manager)
+# %%
+#fetcher = TweetFetcher(app)
 
-fetcher = TweetFetcher(app)
-
-tweets = fetcher.get_user_tweets(KEYWORD,count=10)
+#tweets = fetcher.get_user_tweets(KEYWORD,count=10)
 print('TWEETS - OK ')
 # Insert into the database
-insert_tweets_into_db(KEYWORD, tweets)
+#insert_tweets_into_db(KEYWORD, tweets)
 
 print('DATA INSERTED INTO DATABASE')
