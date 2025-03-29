@@ -25,19 +25,19 @@ class KeyManager:
 
         if bearer_token:
             return {"BEARER_TOKEN": bearer_token}
-
-        # Fallback to local config.json
-        try:
-            with open("config.json", "r") as f:
-                return json.load(f)
-        except FileNotFoundError:
-            print("Error: config.json not found.")
-            return None
+        else:
+            # Fallback to local config.json
+            try:
+                with open("config.json", "r") as f:
+                    return json.load(f)
+            except FileNotFoundError:
+                print("Error: config.json not found.")
+                return None
 
 class XApplication:
     def __init__(self, key_manager: KeyManager):
         """Initialize X API credentials using the provided key manager."""
-        self.bearer_token = key_manager.keys["BEARER_TOKEN"]  # Adicione essa chave no config.json
+        self.bearer_token = key_manager.keys['BEARER_TOKEN'] 
         self.client = ty.Client(bearer_token=self.bearer_token)
 
 class TweetFetcher:
