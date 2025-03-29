@@ -1,9 +1,15 @@
 ### Libraries 
-import pandas as pd 
 import tweepy as ty 
-import numpy as np
 import json 
-import requests
+from db_connection import get_db_connection
+from datetime import datetime
+import os
+
+### Global variables 
+
+KEYWORD = 'AI'
+DS = datetime.now().strftime("%d/%m/%Y %H:%M")
+
 
 ### Class
 
@@ -14,7 +20,13 @@ class KeyManager:
         self.keys = self.load_keys()
 
     def load_keys(self):
-        """Fetch keys from config.json."""
+        """Fetch keys from environment variables first, fallback to config.json."""
+        bearer_token = os.getenv("BEARER_TOKEN")  # Load from GitHub Secret
+
+        if bearer_token:
+            return {"BEARER_TOKEN": bearer_token}
+
+        # Fallback to local config.json
         try:
             with open("config.json", "r") as f:
                 return json.load(f)
@@ -48,10 +60,50 @@ class TweetFetcher:
             print(f"Error: {e}")
             return None
         
+### Insert into database
+
+def insert_tweets_into_db(keyword, tweets):
+    """Insert fetched tweets into the database."""
+    if not tweets:
+        print("No tweets to insert.")
+        return
+    
+    conn = get_db_connection()
+    if not conn:
+        return
+    
+    try:
+        cur = conn.cursor()
+        
+        insert_query = """
+        INSERT INTO raw.tweets_raw (key_word, tweet_subject, ds)
+        VALUES (%s, %s, %s);
+        """
+        
+        data = [(keyword, tweet, DS) for tweet in tweets]
+
+        cur.executemany(insert_query, data)
+        conn.commit()
+        
+        print(f"Successfully inserted {len(tweets)} tweets into the database!")
+    
+    except Exception as e:
+        print(f"Error inserting tweets: {e}")
+    
+    finally:
+        cur.close()
+        conn.close()        
+        
 ### Initialize class 
 
 key_manager = KeyManager()
 app = XApplication(key_manager)
 
 fetcher = TweetFetcher(app)
-tweets = fetcher.get_user_tweets('AI',count=10)
+
+tweets = fetcher.get_user_tweets(KEYWORD,count=10)
+print('TWEETS - OK ')
+# Insert into the database
+insert_tweets_into_db(KEYWORD, tweets)
+
+print('DATA INSERTED INTO DATABASE')
