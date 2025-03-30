@@ -23,9 +23,13 @@ jobs:
           pip install -r requirements.txt
 
       - name: Set up environment variables
-        env:
-          BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: echo "Environment variables set."
+        run: |
+            echo "BEARER_TOKEN=${{ secrets.BEARER_TOKEN }}" >> $GITHUB_ENV
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+  
+      - name: Debug environment variables
+        run: |
+            echo "BEARER_TOKEN is set to: ${BEARER_TOKEN}"
+            env | grep BEARER
       - name: Run script
         run: python get_tweets.py
