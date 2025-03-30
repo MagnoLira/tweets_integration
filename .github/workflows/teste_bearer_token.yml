@@ -21,7 +21,7 @@ jobs:
           echo "BEARER_TOKEN=${{ secrets.BEARER_TOKEN }}" >> $GITHUB_ENV
 
       - name: Debug BEARER_TOKEN
-        run: | 
+        run: |
             echo "Token is set to: ${BEARER_TOKEN}"
 
       - name: Run test script

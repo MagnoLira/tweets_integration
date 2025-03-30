@@ -1,6 +1,6 @@
 import os
 
-bearer_token = os.getenv("BEARER_TOKEN")
+bearer_token = os.environ("BEARER_TOKEN")
 
 if bearer_token:
     print("✅ BEARER_TOKEN was successfully loaded!")
