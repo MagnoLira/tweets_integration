@@ -39,6 +39,7 @@ class XApplication:
     def __init__(self, key_manager: KeyManager):
         """Initialize X API credentials using the provided key manager."""        
         self.bearer_token = key_manager.load_keys()['BEARER_TOKEN']
+        self.client = ty.Client(bearer_token=self.bearer_token)
 
 class TweetFetcher:
     def __init__(self, x_app: XApplication):
