@@ -1,3 +1,4 @@
+# %%
 ### Libraries 
 import tweepy as ty 
 import json 
@@ -12,7 +13,7 @@ load_dotenv()
 KEYWORD = 'AI'
 DS = datetime.now().strftime("%d/%m/%Y %H:%M")
 
-
+# %%
 ### Class
 
 
@@ -103,11 +104,12 @@ app = XApplication(key_manager)
 fetcher = TweetFetcher(app)
 
 tweets = fetcher.get_user_tweets(KEYWORD,count=10)
-#print('TWEETS - OK ')
+tweets
+print('TWEETS - OK ')
 # Insert into the database
 insert_tweets_into_db(KEYWORD, tweets)
 
-#print('DATA INSERTED INTO DATABASE')
+print('DATA INSERTED INTO DATABASE')
 
 
 
