@@ -1,4 +1,3 @@
-# %%
 ### Libraries 
 import tweepy as ty 
 import json 
@@ -13,7 +12,6 @@ load_dotenv()
 KEYWORD = 'AI'
 DS = datetime.now().strftime("%d/%m/%Y %H:%M")
 
-# %%
 ### Class
 
 
