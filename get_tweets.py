@@ -63,7 +63,7 @@ class TweetFetcher:
 ### Insert into database
 
 def insert_tweets_into_db(keyword, tweets):
-    """Insert fetched tweets into the database."""
+    """Insert only new tweets into the database."""
     if not tweets:
         print("No tweets to insert.")
         return
@@ -74,25 +74,36 @@ def insert_tweets_into_db(keyword, tweets):
     
     try:
         cur = conn.cursor()
-        
+
+        # Buscar tweets já armazenados no banco
+        cur.execute("SELECT tweet_subject FROM raw.tweets_raw WHERE key_word = %s;", (keyword,))
+        existing_tweets = {row[0] for row in cur.fetchall()}  # Criamos um conjunto com os tweets já armazenados
+
+        # Filtrar apenas os tweets que ainda não foram armazenados
+        new_tweets = [tweet for tweet in tweets if tweet not in existing_tweets]
+
+        if not new_tweets:
+            print("No new tweets to insert.")
+            return
+
         insert_query = """
         INSERT INTO raw.tweets_raw (key_word, tweet_subject, ds)
         VALUES (%s, %s, %s);
         """
         
-        data = [(keyword, tweet, DS) for tweet in tweets]
+        data = [(keyword, tweet, DS) for tweet in new_tweets]
 
         cur.executemany(insert_query, data)
         conn.commit()
         
-        print(f"Successfully inserted {len(tweets)} tweets into the database!")
+        print(f"Successfully inserted {len(new_tweets)} new tweets into the database!")
     
     except Exception as e:
         print(f"Error inserting tweets: {e}")
     
     finally:
         cur.close()
-        conn.close()        
+        conn.close()      
         
 ### Initialize class 
 
